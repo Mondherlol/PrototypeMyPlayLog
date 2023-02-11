@@ -1,0 +1,76 @@
+const express = require('express')
+const morgan = require('morgan')
+const cors = require('cors')
+const axios = require('axios')
+const app = express()
+
+app.use(cors())
+app.use(morgan('dev'))
+
+app.get('/game/:id', (req, res, next) => {
+  var id = req.params.id
+  var data = 'fields: name, cover,summary; where id=' + id + ';'
+  var config = {
+    method: 'post',
+    url: 'https://api.igdb.com/v4/games/',
+    headers: {
+      Authorization: 'Bearer vu57a9n1nj1dlgr80z91knet3puvmj',
+      'Client-ID': '6jv4rs9l9dyzch8x0tiyziccpv6wat',
+      'Content-Type': 'text/plain',
+    },
+    data: data,
+  }
+  var cover = ''
+
+  axios(config)
+    .then((response) => {
+      cover = response.data[0].cover
+
+      console.log(cover)
+      var configCover = {
+        method: 'post',
+        url: 'https://api.igdb.com/v4/covers/',
+        headers: {
+          Authorization: 'Bearer vu57a9n1nj1dlgr80z91knet3puvmj',
+          'Client-ID': '6jv4rs9l9dyzch8x0tiyziccpv6wat',
+          'Content-Type': 'text/plain',
+        },
+        data: `fields url, image_id; where id= ${cover} ;`,
+      }
+      axios(configCover).then((resCov) => {
+        cover = resCov.data[0].url
+        response.data[0].cover = cover
+          .substring(2)
+          .replace('t_thumb', 't_cover_big')
+        res.status(200).json(response.data)
+      })
+    })
+    .catch((err) => {
+      res.send(err)
+    })
+})
+
+app.get('/search/:name', (req, res, next) => {
+  var name = req.params.name
+  var data = `fields name,cover; search " ${name} "; `
+  var config = {
+    method: 'post',
+    url: 'https://api.igdb.com/v4/games/',
+    headers: {
+      Authorization: 'Bearer vu57a9n1nj1dlgr80z91knet3puvmj',
+      'Client-ID': '6jv4rs9l9dyzch8x0tiyziccpv6wat',
+      'Content-Type': 'text/plain',
+    },
+    data: data,
+  }
+
+  axios(config)
+    .then((response) => {kmàj 
+      res.status(200).json(response.data)
+    })
+    .catch((err) => {
+      res.send(err)
+    })
+})
+
+module.exports = app
