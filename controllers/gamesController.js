@@ -18,22 +18,21 @@ exports.getGameById = (req, res) => {
   axios(config)
     .then((response) => {
       console.log(response.data[0].name)
-      const cover = response.data[0].cover
-      const coverConfig = {
-        ...apiConfig,
-        url: 'https://api.igdb.com/v4/covers/',
-        data: `fields url, image_id; where id=${cover};`,
-      }
-
-      res.status(200).json(response.data)
-
-      //   axios(coverConfig).then((resCov) => {
-      //     const coverUrl = resCov.data[0].url
-      //       .substring(2)
-      //       .replace('t_thumb', 't_cover_big')
-      //     response.data[0].cover = coverUrl
-
-      //   })
+      if (response.data[0].cover != undefined) {
+        const cover = response.data[0].cover
+        const coverConfig = {
+          ...apiConfig,
+          url: 'https://api.igdb.com/v4/covers/',
+          data: `fields url, image_id; where id=${cover};`,
+        }
+        axios(coverConfig).then((resCov) => {
+          const coverUrl = resCov.data[0].url
+            .substring(2)
+            .replace('t_thumb', 't_cover_big')
+          response.data[0].cover = coverUrl
+          res.status(200).json(response.data)
+        })
+      } else res.status(200).json(response.data)
     })
     .catch((err) => {
       res.send(err)
