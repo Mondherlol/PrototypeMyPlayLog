@@ -6,6 +6,8 @@ const axios = require('axios')
 const app = express()
 const steamRoutes = require('./routes/steamRoutes')
 
+//zuuhcfezirfgcuygeruuyfcez test
+
 const apiConfig = {
   url: 'https://api.igdb.com/v4/games/',
   method: 'post',
