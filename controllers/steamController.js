@@ -1,9 +1,11 @@
+var axios = require('axios')
+
+//Clé d'API
 const steamKey = 'D63A16F7FA7B56526DC376DB41F30F8D'
+
 //steamId pour tester :  76561198285816248
 
 exports.getSteamUser = (req, res, next) => {
-  var axios = require('axios')
-
   var config = {
     method: 'get',
     url: `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${req.params.steamId}`,
