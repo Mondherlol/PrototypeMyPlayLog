@@ -4,6 +4,7 @@ const cors = require('cors')
 let hltb = require('howlongtobeat')
 const axios = require('axios')
 const app = express()
+const steamRoutes = require('./routes/steamRoutes')
 
 const apiConfig = {
   url: 'https://api.igdb.com/v4/games/',
@@ -102,49 +103,6 @@ app.get('/search/:name', (req, res) => {
       res.send(err)
     })
 })
-const steamKey = 'D63A16F7FA7B56526DC376DB41F30F8D'
-//steamId 76561198285816248
 
-app.get('/steam/:steamId', (req, res, next) => {
-  var axios = require('axios')
-
-  var config = {
-    method: 'get',
-    // url: `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${steamKey}&steamid=${req.params.steamId}&format=json`,
-    url: `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${req.params.steamId}`,
-  }
-
-  axios(config)
-    .then(function (response) {
-      let resultat = response.data.response.players
-      if (resultat.length < 1)
-        res.status(200).json({ message: 'Aucun resultat.' })
-      else {
-        let user = resultat[0]
-        let pseudo = user.personaname
-        let avatar = user.avatarfull
-        console.log(pseudo)
-
-        var configGames = {
-          method: 'get',
-          url: `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${steamKey}&steamid=${req.params.steamId}&format=json&include_appinfo=true`,
-        }
-
-        axios(configGames)
-          .then((resGames) => {
-            let games = resGames.data.response
-            games.user = { pseudo: pseudo, avatar: avatar }
-            res.status(200).json(games)
-          })
-          .catch((err) => {
-            console.log(err)
-            res.status(400).json(err)
-          })
-      }
-    })
-    .catch(function (error) {
-      res.status(400).json(error)
-    })
-})
-
+app.use('/api/steam', steamRoutes)
 module.exports = app
