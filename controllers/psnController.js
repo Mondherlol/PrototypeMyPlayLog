@@ -1,5 +1,16 @@
 const psn = require('psn-api')
 
+function cleanNames(names) {
+  return names.map((name) => {
+    name = name.toLowerCase()
+    name = name.replace('trophies', '')
+    name = name.replace(/\n/g, '')
+    // Supprime les caractères spéciaux à l'exception des tirets et apostrophes
+    name = name.replace(/[^-\w\s']/gi, '')
+    return name.trim()
+  })
+}
+
 exports.getUserInfo = async (req, res) => {
   const username = req.params.username
   try {
@@ -34,11 +45,8 @@ exports.getUserGames = async (req, res) => {
         response.trophyTitles.map(({ trophyTitleName }) => trophyTitleName)
       ),
     ]
+    games = cleanNames(games)
     res.status(200).json({ Games: games })
-
-    //fama problem mayhotelekch esm el game ama esm trophies eli lgame samethom
-    //kima fi apex yektebli "apex legens Trophies" w houni manajmch nrbot bil IGDB
-    // se3at games yhabtou extensions eli houma mch mawjoudin fil IGDB
   } catch (err) {
     res.status(401).json(err)
   }

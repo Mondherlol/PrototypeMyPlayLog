@@ -1,12 +1,14 @@
 let hltb = require('howlongtobeat')
 const axios = require('axios')
+const dotenv = require('dotenv')
+dotenv.config()
 
 const apiConfig = {
   url: 'https://api.igdb.com/v4/games/',
   method: 'post',
   headers: {
-    Authorization: 'Bearer vu57a9n1nj1dlgr80z91knet3puvmj',
-    'Client-ID': '6jv4rs9l9dyzch8x0tiyziccpv6wat',
+    Authorization: process.env.IGDB_TOKEN,
+    'Client-ID': process.env.IGDB_CLIENT_ID,
     'Content-Type': 'text/plain',
   },
 }
@@ -14,7 +16,7 @@ const apiConfig = {
 exports.getGameById = (req, res) => {
   const id = req.params.id
   const data = `fields: name, cover, summary; where id=${id};`
-  const config = { ...apiConfig, data }
+  let config = { ...apiConfig, data }
   axios(config)
     .then((response) => {
       console.log(response.data[0].name)
