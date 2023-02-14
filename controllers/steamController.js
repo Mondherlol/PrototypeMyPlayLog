@@ -12,13 +12,11 @@ exports.getSteamUser = (req, res, next) => {
     .then(function (response) {
       let resultat = response.data.response.players
       if (resultat.length < 1)
-        res.status(200).json({ message: 'Aucun resultat.' })
+        res.status(200).json({ error: 'Aucun resultat.' })
       else {
         let user = resultat[0]
         let pseudo = user.personaname
         let avatar = user.avatarfull
-        console.log(pseudo)
-
         var configGames = {
           method: 'get',
           url: `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${process.env.STEAMKEY}&steamid=${req.params.steamId}&format=json&include_appinfo=true`,
@@ -31,12 +29,27 @@ exports.getSteamUser = (req, res, next) => {
             res.status(200).json(games)
           })
           .catch((err) => {
-            console.log(err)
-            res.status(400).json(err)
+            res.status(400).json({ error: err })
           })
       }
     })
     .catch(function (error) {
-      res.status(400).json(error)
+      res.status(400).json({ error: error })
+    })
+}
+
+exports.getUserAchievements = (req, res, next) => {
+  console.log(req.params.appid)
+  console.log(req.params.steamId)
+  var config = {
+    method: 'get',
+    url: `http://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=${req.params.appid}&key=${process.env.STEAMKEY}&steamid=${req.params.steamId}`,
+  }
+  axios(config)
+    .then((trophies) => {
+      res.status(200).json(trophies.data)
+    })
+    .catch((err) => {
+      res.status(400).json({ error: err })
     })
 }
