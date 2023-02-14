@@ -75,49 +75,11 @@ exports.getUserTrophies = async (req, res, next) => {
 
 
 
-exports.getTrophiesByTitle = async (req, res, next) => {
+exports.getTrophiesByTitle = async (req, res) => {
   const username = req.params.username
   const npComIdGame = req.params.npComIdGame
 
-  // try {
-  //   try {
-  //     //authorization
-  //     const accessCode = await psn.exchangeNpssoForCode(process.env.MYNPSSO)
-  //     const authorization = await psn.exchangeCodeForAccessToken(accessCode)
 
-  //         try {
-  //           //get user Id with username
-  //           const userID = await (
-  //             await psn.getProfileFromUserName(authorization, username)
-  //           ).profile.accountId;
-  //               try {
-    
-  //                 //get user trophies by title 
-  //               const response = getUserTrophiesEarnedForTitle(
-  //               authorization,
-  //               userID,
-  //               npComIdGame, // np com id lil game
-  //               "all",
-  //               { npServiceName: "trophy" }
-  //             );
-
-  //               //response
-  //               res.status(200).json(response); 
-  //               } catch (err) {
-  //                 res.status(401).json({problem:"game id doesn't exist",error:err})
-  //               }
-
-  //     } catch (err) {
-  //       res.status(401).json({problem:"username doesn't exist",error:err})
-  //     }
-  //  } catch (err) {
-  //    res.status(401).json({problem:"auth psn",error:err})
-  //  }
- 
-
-  // } catch (err) {
-  //   res.status(401).json(err)
-  // }
 
 
   //second try
@@ -132,8 +94,7 @@ exports.getTrophiesByTitle = async (req, res, next) => {
     await psn.getProfileFromUserName(authorization, username)
   ).profile.accountId;
      //get user trophies by title 
-     psn.getUserTrophiesEarnedForTitle()
-     const response = psn.getUserTrophiesEarnedForTitle(authorization,userID,npComIdGame,"all",{ npServiceName: "trophy" });
+     const response =await psn.getUserTrophiesEarnedForTitle(authorization,userID,npComIdGame,"all",{ npServiceName: "trophy" });
 
       //response
       res.status(200).json(response); 
@@ -143,6 +104,9 @@ exports.getTrophiesByTitle = async (req, res, next) => {
   }
 
   
+
+
+
 
 
 
