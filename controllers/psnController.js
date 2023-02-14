@@ -79,3 +79,43 @@ exports.getUserTrophies = async (req, res, next) => {
     res.status(401).json(err)
   }
 }
+
+
+
+exports.getTrophiesByTitle = async (req, res) => {
+  const username = req.params.username
+  const npComIdGame = req.params.npComIdGame
+
+
+
+
+  //second try
+
+  try {
+      //authorization
+  const accessCode = await psn.exchangeNpssoForCode(process.env.MYNPSSO)
+  const authorization = await psn.exchangeCodeForAccessToken(accessCode)
+
+  //get user Id with username
+  const userID = await (
+    await psn.getProfileFromUserName(authorization, username)
+  ).profile.accountId;
+     //get user trophies by title 
+     const response =await psn.getUserTrophiesEarnedForTitle(authorization,userID,npComIdGame,"all",{ npServiceName: "trophy" });
+
+      //response
+      res.status(200).json(response); 
+    
+  } catch (err) {
+    res.status(401).json(err)
+  }
+
+  
+
+
+
+
+
+
+
+}
