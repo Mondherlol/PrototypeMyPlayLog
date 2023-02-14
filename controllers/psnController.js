@@ -1,5 +1,16 @@
 const psn = require('psn-api')
 
+function cleanNames(names) {
+  return names.map((name) => {
+    name = name.toLowerCase()
+    name = name.replace('trophies', '')
+    name = name.replace(/\n/g, '')
+    // Supprime les caractères spéciaux à l'exception des tirets et apostrophes
+    name = name.replace(/[^-\w\s']/gi, '')
+    return name.trim()
+  })
+}
+
 exports.getUserInfo = async (req, res) => {
   const username = req.params.username
   try {
@@ -34,11 +45,8 @@ exports.getUserGames = async (req, res) => {
         response.trophyTitles.map(({ trophyTitleName }) => trophyTitleName)
       ),
     ]
+    games = cleanNames(games)
     res.status(200).json({ Games: games })
-
-    //fama problem mayhotelekch esm el game ama esm trophies eli lgame samethom
-    //kima fi apex yektebli "apex legens Trophies" w houni manajmch nrbot bil IGDB
-    // se3at games yhabtou extensions eli houma mch mawjoudin fil IGDB
   } catch (err) {
     res.status(401).json(err)
   }
@@ -67,17 +75,76 @@ exports.getUserTrophies = async (req, res, next) => {
 
 
 
-exports.getFullProfile = async (req, res, next) => {
+exports.getTrophiesByTitle = async (req, res, next) => {
+  const username = req.params.username
+  const npComIdGame = req.params.npComIdGame
+
+  // try {
+  //   try {
+  //     //authorization
+  //     const accessCode = await psn.exchangeNpssoForCode(process.env.MYNPSSO)
+  //     const authorization = await psn.exchangeCodeForAccessToken(accessCode)
+
+  //         try {
+  //           //get user Id with username
+  //           const userID = await (
+  //             await psn.getProfileFromUserName(authorization, username)
+  //           ).profile.accountId;
+  //               try {
+    
+  //                 //get user trophies by title 
+  //               const response = getUserTrophiesEarnedForTitle(
+  //               authorization,
+  //               userID,
+  //               npComIdGame, // np com id lil game
+  //               "all",
+  //               { npServiceName: "trophy" }
+  //             );
+
+  //               //response
+  //               res.status(200).json(response); 
+  //               } catch (err) {
+  //                 res.status(401).json({problem:"game id doesn't exist",error:err})
+  //               }
+
+  //     } catch (err) {
+  //       res.status(401).json({problem:"username doesn't exist",error:err})
+  //     }
+  //  } catch (err) {
+  //    res.status(401).json({problem:"auth psn",error:err})
+  //  }
+ 
+
+  // } catch (err) {
+  //   res.status(401).json(err)
+  // }
+
+
+  //second try
 
   try {
-     //authorization
-     const accessCode = await psn.exchangeNpssoForCode(process.env.MYNPSSO)
-     const authorization = await psn.exchangeCodeForAccessToken(accessCode)
-  } catch (error) {
-    res.status(401).json({problem:"auth psn",error:err})
+      //authorization
+  const accessCode = await psn.exchangeNpssoForCode(process.env.MYNPSSO)
+  const authorization = await psn.exchangeCodeForAccessToken(accessCode)
+
+  //get user Id with username
+  const userID = await (
+    await psn.getProfileFromUserName(authorization, username)
+  ).profile.accountId;
+     //get user trophies by title 
+     psn.getUserTrophiesEarnedForTitle()
+     const response = psn.getUserTrophiesEarnedForTitle(authorization,userID,npComIdGame,"all",{ npServiceName: "trophy" });
+
+      //response
+      res.status(200).json(response); 
+    
+  } catch (err) {
+    res.status(401).json(err)
   }
 
   
+
+
 
 
 }

@@ -1,14 +1,11 @@
 var axios = require('axios')
 
-//Clé d'API
-const steamKey = 'D63A16F7FA7B56526DC376DB41F30F8D'
-
 //steamId pour tester :  76561198285816248
 
 exports.getSteamUser = (req, res, next) => {
   var config = {
     method: 'get',
-    url: `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${req.params.steamId}`,
+    url: `http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${process.env.STEAMKEY}&steamids=${req.params.steamId}`,
   }
 
   axios(config)
@@ -24,7 +21,7 @@ exports.getSteamUser = (req, res, next) => {
 
         var configGames = {
           method: 'get',
-          url: `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${steamKey}&steamid=${req.params.steamId}&format=json&include_appinfo=true`,
+          url: `http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=${process.env.STEAMKEY}&steamid=${req.params.steamId}&format=json&include_appinfo=true`,
         }
 
         axios(configGames)
