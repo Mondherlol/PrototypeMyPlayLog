@@ -1,11 +1,14 @@
 let hltb = require('howlongtobeat')
 const axios = require('axios')
+const dotenv =require('dotenv');
+
+dotenv.config();
 
 const apiConfig = {
   url: 'https://api.igdb.com/v4/games/',
   method: 'post',
   headers: {
-    Authorization: 'Bearer vu57a9n1nj1dlgr80z91knet3puvmj',
+    Authorization: process.env.AUTH,
     'Client-ID': '6jv4rs9l9dyzch8x0tiyziccpv6wat',
     'Content-Type': 'text/plain',
   },

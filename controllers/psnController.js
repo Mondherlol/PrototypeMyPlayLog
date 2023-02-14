@@ -64,3 +64,20 @@ exports.getUserTrophies = async (req, res, next) => {
     res.status(401).json(err)
   }
 }
+
+
+
+exports.getFullProfile = async (req, res, next) => {
+
+  try {
+     //authorization
+     const accessCode = await psn.exchangeNpssoForCode(process.env.MYNPSSO)
+     const authorization = await psn.exchangeCodeForAccessToken(accessCode)
+  } catch (error) {
+    res.status(401).json({problem:"auth psn",error:err})
+  }
+
+  
+
+
+}
