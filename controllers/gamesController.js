@@ -43,14 +43,13 @@ exports.getGameById = (req, res) => {
 
 exports.searchGame = (req, res) => {
   const name = req.params.name
-  const data = `fields name, cover; search "${name}"; limit 20; `
+  const data = `fields name, cover; search "${name}"; limit 25; `
   const config = { ...apiConfig, data }
 
   axios(config)
     .then((response) => {
       if (response.data.length < 1) {
-        console.log('Aucun resultat.')
-        res.status(200).end('Pas de resultat.')
+        res.status(200).json(response.data)
         return
       }
       const covers = response.data.map((game) => {
@@ -62,7 +61,7 @@ exports.searchGame = (req, res) => {
         url: 'https://api.igdb.com/v4/covers/',
         data: `fields url, image_id;  where id=(${covers.join(
           ','
-        )}); limit 20;`,
+        )}); limit 25;`,
       }
 
       axios(coverConfig)

@@ -64,9 +64,16 @@ exports.getUserTrophies = async (req, res, next) => {
     const userID = await (
       await psn.getProfileFromUserName(authorization, username)
     ).profile.accountId
-
     //get all Trophies with additional informations
-    const response = await psn.getUserTitles(authorization, userID)
+    // const response = await psn.getUserTitles(authorization, userID)
+    const response = await getUserTrophiesEarnedForTitle(
+      authorization,
+      userId,
+      'NPWR25088_00', // Red Dead Redemption
+      'all',
+      { npServiceName: 'trophy' }
+    )
+    console.log(response)
     res.status(200).json(response)
   } catch (err) {
     res.status(401).json(err)

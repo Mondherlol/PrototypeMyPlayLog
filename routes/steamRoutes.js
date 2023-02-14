@@ -5,4 +5,5 @@ const steamController = require('../controllers/steamController')
 
 router.get('/userInfo/:steamId', steamController.getSteamUser)
 router.get('/userTrophies/:steamId/:appid', steamController.getUserAchievements)
+
 module.exports = router
